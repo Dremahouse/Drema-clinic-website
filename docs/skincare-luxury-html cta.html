@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premium Skincare</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Sarabun:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold: #c9a96e;
+    --gold-light: #e8d5b0;
+    --gold-pale: #f5ede0;
+    --cream: #faf6f0;
+    --dark: #1a1410;
+    --dark-mid: #2d2218;
+    --text-muted: #8a7560;
+  }
+
+  body {
+    background: var(--dark);
+    font-family: 'Sarabun', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Atmospheric background */
+  .bg-layer {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 50%, rgba(201,169,110,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 80% at 85% 20%, rgba(201,169,110,0.05) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 60% 90%, rgba(201,169,110,0.06) 0%, transparent 50%),
+      linear-gradient(160deg, #0e0b08 0%, #1a1410 40%, #12100d 100%);
+    z-index: 0;
+  }
+
+  /* Noise texture overlay */
+  .noise {
+    position: fixed;
+    inset: 0;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Thin horizontal rule decoration */
+  .line-top, .line-bottom {
+    position: fixed;
+    left: 60px;
+    right: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,169,110,0.3), transparent);
+    z-index: 2;
+  }
+  .line-top { top: 40px; }
+  .line-bottom { bottom: 40px; }
+
+  /* Side labels */
+  .side-label {
+    position: fixed;
+    writing-mode: vertical-rl;
+    font-family: 'Sarabun', sans-serif;
+    font-weight: 200;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: rgba(201,169,110,0.35);
+    z-index: 3;
+    text-transform: uppercase;
+  }
+  .side-label-left { left: 30px; top: 50%; transform: translateY(-50%) rotate(180deg); }
+  .side-label-right { right: 30px; top: 50%; transform: translateY(-50%); }
+
+  /* Main container */
+  .container {
+    position: relative;
+    z-index: 10;
+    max-width: 900px;
+    width: 100%;
+    padding: 80px 60px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* Eyebrow */
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 36px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.2s;
+  }
+  .eyebrow-line {
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .eyebrow-text {
+    font-family: 'Sarabun', sans-serif;
+    font-weight: 200;
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  /* Main headline */
+  .headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 1.1;
+    color: var(--cream);
+    margin-bottom: 12px;
+    opacity: 0;
+    animation: fadeUp 1.1s ease forwards 0.4s;
+  }
+  .headline em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  /* Accent strip under headline */
+  .headline-accent {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin: 28px 0 32px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.6s;
+  }
+
+  /* Subtext */
+  .subtext {
+    font-family: 'Sarabun', sans-serif;
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(250,246,240,0.5);
+    max-width: 480px;
+    margin-bottom: 56px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.7s;
+  }
+  .subtext span {
+    color: rgba(201,169,110,0.7);
+  }
+
+  /* Social links */
+  .links-label {
+    font-family: 'Sarabun', sans-serif;
+    font-weight: 200;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: rgba(201,169,110,0.4);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 0.85s;
+  }
+
+  .links-grid {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    justify-content: start;
+    gap: 10px;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 1s;
+  }
+
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 11px 22px;
+    border: 1px solid rgba(201,169,110,0.2);
+    background: rgba(201,169,110,0.04);
+    color: rgba(250,246,240,0.65);
+    font-family: 'Sarabun', sans-serif;
+    font-weight: 300;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-radius: 999px;
+    transition: color 0.4s ease, border-color 0.4s ease;
+    backdrop-filter: blur(4px);
+  }
+  .link-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,169,110,0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .link-btn:hover {
+    color: var(--gold-light);
+    border-color: rgba(201,169,110,0.5);
+  }
+  .link-btn:hover::before { opacity: 1; }
+
+  .link-btn .icon {
+    width: 14px;
+    height: 14px;
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+
+  /* Bottom badge */
+  .badge {
+    position: absolute;
+    bottom: 80px;
+    right: 60px;
+    text-align: right;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 1.2s;
+  }
+  .badge-circle {
+    width: 90px;
+    height: 90px;
+    border: 1px solid rgba(201,169,110,0.2);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    position: relative;
+  }
+  .badge-circle::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(201,169,110,0.1);
+    border-radius: 50%;
+  }
+  .badge-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-weight: 300;
+    color: rgba(201,169,110,0.6);
+    text-align: center;
+    letter-spacing: 0.05em;
+    line-height: 1.5;
+  }
+  .badge-free {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--gold);
+    display: block;
+  }
+
+  /* Floating gold dots */
+  .dot {
+    position: fixed;
+    border-radius: 50%;
+    background: var(--gold);
+    z-index: 2;
+    animation: float 8s ease-in-out infinite;
+  }
+  .dot-1 { width: 3px; height: 3px; top: 20%; left: 10%; opacity: 0.2; animation-delay: 0s; }
+  .dot-2 { width: 2px; height: 2px; top: 70%; left: 5%; opacity: 0.15; animation-delay: -2s; }
+  .dot-3 { width: 4px; height: 4px; top: 35%; right: 8%; opacity: 0.18; animation-delay: -4s; }
+  .dot-4 { width: 2px; height: 2px; top: 80%; right: 15%; opacity: 0.12; animation-delay: -6s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+  }
+
+  /* Thin vertical accent line */
+  .v-line {
+    position: fixed;
+    top: 80px;
+    bottom: 80px;
+    left: 55px;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(201,169,110,0.15), transparent);
+    z-index: 2;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="noise"></div>
+<div class="line-top"></div>
+<div class="line-bottom"></div>
+<div class="v-line"></div>
+<div class="side-label side-label-left">Atelier Skincare — Est. Bangkok</div>
+<div class="side-label side-label-right">Personalized · Premium · Private</div>
+<div class="dot dot-1"></div>
+<div class="dot dot-2"></div>
+<div class="dot dot-3"></div>
+<div class="dot dot-4"></div>
+
+<div class="container">
+  <div class="eyebrow">
+    <div class="eyebrow-line"></div>
+    <span class="eyebrow-text">Premium Skincare Experience</span>
+  </div>
+
+  <h1 class="headline">
+    ประสบการณ์ดูแลผิว<br>
+    <em>ระดับพรีเมียม</em><br>
+    ออกแบบเฉพาะบุคคล
+  </h1>
+
+  <div class="headline-accent"></div>
+
+  <p class="subtext">
+    ให้แพทย์ช่วยประเมินและแนะนำโปรแกรมที่เหมาะกับคุณมากที่สุด<br>
+    ปรึกษา <span>ฟรี</span> — ไม่มีค่าใช้จ่าย ไม่มีข้อผูกมัด
+  </p>
+
+  <p class="links-label">ติดต่อเราผ่านช่องทาง</p>
+
+  <div class="links-grid">
+    <a href="#" class="link-btn">
+      <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+      LINE Town in Town
+    </a>
+    <a href="#" class="link-btn">
+      <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+      LINE Emporium
+    </a>
+    <a href="#" class="link-btn">
+      <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      Facebook
+    </a>
+    <a href="#" class="link-btn">
+      <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+      Instagram
+    </a>
+    <a href="#" class="link-btn">
+      <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V9.37a8.16 8.16 0 004.77 1.52V7.44a4.85 4.85 0 01-1-.75z"/></svg>
+      TikTok
+    </a>
+    <a href="#" class="link-btn">
+      <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+      YouTube
+    </a>
+  </div>
+</div>
+
+<div class="badge">
+  <div class="badge-circle">
+    <span class="badge-free">ฟรี</span>
+    <span class="badge-text">ไม่มี<br>ค่าใช้จ่าย</span>
+  </div>
+</div>
+
+</body>
+</html>
