@@ -26,6 +26,10 @@ import ViewLiveLayout from './src/studio/components/ViewLiveLayout';
 import { schemaTypes } from './src/studio/schema';
 import { structure } from './src/studio/structure';
 
+const projectId = clientEnv.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const dataset = clientEnv.NEXT_PUBLIC_SANITY_DATASET;
+const siteUrl = clientEnv.NEXT_PUBLIC_SITE_URL;
+
 // Define the home location for the presentation tool
 const homeLocation = {
   title: 'Home',
@@ -63,8 +67,8 @@ export default defineConfig({
   basePath: '/studio',
   name: 'default',
   title: 'Ignite for Sanity',
-  projectId: clientEnv.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  dataset: clientEnv.NEXT_PUBLIC_SANITY_DATASET,
+  projectId: projectId,
+  dataset: dataset,
   auth: {
     // Force the token login method so the embedded Studio persists the signed-in
     // HUMAN Studio user's session token. No service/project credential is involved.
@@ -74,7 +78,7 @@ export default defineConfig({
     // Presentation tool configuration for Visual Editing
     presentationTool({
       previewUrl: {
-        origin: clientEnv.NEXT_PUBLIC_SITE_URL,
+        origin: siteUrl,
         preview: '/',
         previewMode: {
           enable: '/api/draft-mode/enable',

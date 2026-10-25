@@ -53,3 +53,9 @@ next-env.d.ts
 .env.test
 .env.*.test
 /.swc
+
+# Migration validation reports (contain infrastructure identifiers)
+.migration-validation/
+
+# Local backups (may contain Sanity data exports or sensitive content)
+backups/

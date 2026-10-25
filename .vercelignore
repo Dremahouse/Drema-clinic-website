@@ -1,0 +1,11 @@
+node_modules
+.env*
+.vercel
+.next
+.sanity
+dist
+*.log
+.git
+.gitignore
+backups
+.migration-validation
