@@ -15,6 +15,7 @@ import {
   presentationTool,
 } from 'sanity/presentation';
 import { structureTool } from 'sanity/structure';
+import { clientEnv } from '@/env/clientEnv';
 import {
   buildLocalizedPath,
   DEFAULT_LOCALE,
@@ -25,51 +26,9 @@ import ViewLiveLayout from './src/studio/components/ViewLiveLayout';
 import { schemaTypes } from './src/studio/schema';
 import { structure } from './src/studio/structure';
 
-const SANITY_STUDIO_PREFIX = 'SANITY_STUDIO_';
-
-const getEnv = (key: string): string => {
-  const val = process.env[key];
-  if (val !== undefined && val !== '') return val;
-  const studioKey = SANITY_STUDIO_PREFIX + key.replace('NEXT_PUBLIC_', '');
-  const studioVal = process.env[studioKey];
-  if (studioVal !== undefined && studioVal !== '') return studioVal;
-  if (typeof process !== 'undefined' && typeof process.cwd === 'function') {
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let nodeRequire: ((module: string) => any) | null = null;
-      try {
-        nodeRequire = typeof require !== 'undefined' ? require : null;
-      } catch {}
-      if (!nodeRequire) return '';
-      const fs = nodeRequire('node:fs');
-      const path = nodeRequire('node:path');
-      const envPath = path.resolve(process.cwd(), '.env.local');
-      const content = fs.readFileSync(envPath, 'utf-8');
-      for (const line of content.split('\n')) {
-        const trimmed = line.trim();
-        if (!trimmed || trimmed.startsWith('#')) continue;
-        const eqIdx = trimmed.indexOf('=');
-        if (eqIdx === -1) continue;
-        const k = trimmed.slice(0, eqIdx).trim();
-        if (k === key || k === studioKey) {
-          let v = trimmed.slice(eqIdx + 1).trim();
-          if (
-            (v.startsWith('"') && v.endsWith('"')) ||
-            (v.startsWith("'") && v.endsWith("'"))
-          ) {
-            v = v.slice(1, -1);
-          }
-          return v;
-        }
-      }
-    } catch {}
-  }
-  return '';
-};
-
-const projectId = getEnv('NEXT_PUBLIC_SANITY_PROJECT_ID');
-const dataset = getEnv('NEXT_PUBLIC_SANITY_DATASET');
-const siteUrl = getEnv('NEXT_PUBLIC_SITE_URL');
+const projectId = clientEnv.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const dataset = clientEnv.NEXT_PUBLIC_SANITY_DATASET;
+const siteUrl = clientEnv.NEXT_PUBLIC_SITE_URL;
 
 // Define the home location for the presentation tool
 const homeLocation = {

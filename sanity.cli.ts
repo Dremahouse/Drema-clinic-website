@@ -75,5 +75,13 @@ export default defineCliConfig({
       'process.env.NEXT_PUBLIC_META_PIXEL_ID': JSON.stringify(getEnv('NEXT_PUBLIC_META_PIXEL_ID')),
       'process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID': JSON.stringify(getEnv('NEXT_PUBLIC_TIKTOK_PIXEL_ID')),
     },
+    resolve: {
+      alias: [
+        {
+          find: /^@\/(.*)/,
+          replacement: `${resolve(process.cwd(), 'src')}/$1`,
+        },
+      ],
+    },
   },
 });
